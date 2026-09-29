@@ -1,21 +1,31 @@
-import { X } from 'lucide-react';
+import { X } from "lucide-react";
+import { useEffect } from "react";
 
 export default function Modal({
   children,
   onClose,
-  size = 'lg',
+  size = "lg",
 }: {
   children: React.ReactNode;
   onClose: () => void;
-  size?: 'md' | 'lg';
+  size?: "md" | "lg";
 }) {
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, []);
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 p-0 md:p-5"
       onClick={onClose}
     >
       <section
-        className={`relative max-h-screen w-full overflow-auto rounded-none bg-white md:rounded-[28px] ${size === 'md' ? 'md:max-w-md' : 'md:max-w-5xl'}`}
+        className={`relative max-h-screen w-full overflow-auto rounded-none bg-white md:rounded-[28px] ${size === "md" ? "md:max-w-md" : "md:max-w-5xl"}`}
         onClick={(event) => event.stopPropagation()}
       >
         <button
