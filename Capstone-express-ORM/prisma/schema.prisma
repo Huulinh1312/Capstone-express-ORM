@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model nguoi_dung {
+  nguoi_dung_id Int         @id @default(autoincrement())
+  email         String      @unique @db.VarChar(255)
+  mat_khau      String      @db.VarChar(255)
+  ho_ten        String      @db.VarChar(255)
+  tuoi          Int?
+  anh_dai_dien  String?     @db.VarChar(255)
+  hinh_anh      hinh_anh[]
+  binh_luan     binh_luan[]
+  luu_anh       luu_anh[]
+}
+
+model hinh_anh {
+  hinh_id       Int         @id @default(autoincrement())
+  ten_hinh      String      @db.VarChar(255)
+  duong_dan     String      @db.VarChar(255)
+  mo_ta         String?     @db.VarChar(255)
+  nguoi_dung_id Int
+  nguoi_dung    nguoi_dung  @relation(fields: [nguoi_dung_id], references: [nguoi_dung_id])
+  binh_luan     binh_luan[]
+  luu_anh       luu_anh[]
+}
+
+model binh_luan {
+  binh_luan_id   Int        @id @default(autoincrement())
+  nguoi_dung_id  Int
+  hinh_id        Int
+  ngay_binh_luan DateTime   @default(now())
+  noi_dung       String     @db.VarChar(255)
+  nguoi_dung     nguoi_dung @relation(fields: [nguoi_dung_id], references: [nguoi_dung_id])
+  hinh_anh       hinh_anh   @relation(fields: [hinh_id], references: [hinh_id])
+}
+
+model luu_anh {
+  nguoi_dung_id Int
+  hinh_id       Int
+  ngay_luu      DateTime   @default(now())
+  nguoi_dung    nguoi_dung @relation(fields: [nguoi_dung_id], references: [nguoi_dung_id])
+  hinh_anh      hinh_anh   @relation(fields: [hinh_id], references: [hinh_id])
+
+  @@id([nguoi_dung_id, hinh_id]) // Khóa chính kép
+}

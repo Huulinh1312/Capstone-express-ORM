@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  mysql-db:
+    image: mysql:8.0
+    container_name: capstone_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: capstone_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  nodejs-app:
+    build: .
+    container_name: capstone_node
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql-db
+    environment:
+      # Sửa localhost thành tên service (mysql-db) để Node.js trong Docker gọi được DB trong Docker
+      DATABASE_URL: "mysql://root:root@mysql-db:3306/capstone_db"
+      JWT_SECRET: "bi_mat_cua_huu_linh_123"
+    volumes:
+      - ./public:/usr/src/app/public
+
+volumes:
+  mysql_data:
