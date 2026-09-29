@@ -2,6 +2,8 @@
 
 - Frontend thuần HTML, CSS và JavaScript cho Capstone Express ORM.
 
+- Link Swagger API : http://localhost:8080/api-docs/#/
+
 Chạy local
 
 1. Chạy MySQL và backend:
