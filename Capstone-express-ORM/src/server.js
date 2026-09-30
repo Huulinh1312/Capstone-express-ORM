@@ -315,7 +315,7 @@ app.get('/api/users/profile', verifyToken, getUserProfile);
  *     responses:
  *       200: { description: Cập nhật thành công }
  */
-app.put('/api/users/profile', verifyToken, updateUserProfile);
+app.put('/api/users/profile', verifyToken, upload.single('anh_dai_dien'), updateUserProfile);
 
 /**
  * @swagger

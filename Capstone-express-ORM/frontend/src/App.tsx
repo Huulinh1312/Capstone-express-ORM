@@ -1,17 +1,25 @@
-import { useEffect, useState } from 'react';
-import Header from './components/Header';
-import Toast from './components/Toast';
-import { useAuth } from './context/AuthContext';
-import { Auth, EditProfile, Home, ImageDetail, Profile, UploadPage } from './pages';
-import type { View } from './types';
+import { useEffect, useState } from "react";
+import Header from "./components/Header";
+import ScrollToTop from "./components/ScrollToTop";
+import Toast from "./components/Toast";
+import { useAuth } from "./context/AuthContext";
+import {
+  Auth,
+  EditProfile,
+  Home,
+  ImageDetail,
+  Profile,
+  UploadPage,
+} from "./pages";
+import type { View } from "./types";
 
-type ToastState = { message: string; type: 'success' | 'error' } | null;
+type ToastState = { message: string; type: "success" | "error" } | null;
 
 export default function App() {
   const { user, login, logout, refreshProfile } = useAuth();
-  const [view, setView] = useState<View>('home');
-  const [query, setQuery] = useState('');
-  const [authMode, setAuthMode] = useState<'login' | 'register' | null>(null);
+  const [view, setView] = useState<View>("home");
+  const [query, setQuery] = useState("");
+  const [authMode, setAuthMode] = useState<"login" | "register" | null>(null);
   const [detailId, setDetailId] = useState<number | null>(null);
   const [toast, setToast] = useState<ToastState>(null);
 
@@ -21,18 +29,18 @@ export default function App() {
     return () => window.clearTimeout(timer);
   }, [toast]);
 
-  const notify = (message: string, type: 'success' | 'error' = 'success') =>
+  const notify = (message: string, type: "success" | "error" = "success") =>
     setToast({ message, type });
   const navigate = (nextView: View) => setView(nextView);
   const handleLogin = async (email: string, password: string) => {
     await login(email, password);
     setAuthMode(null);
-    notify('Chào mừng bạn trở lại.');
+    notify("Chào mừng bạn trở lại.");
   };
   const handleLogout = () => {
     logout();
-    navigate('home');
-    notify('Bạn đã đăng xuất.');
+    navigate("home");
+    notify("Bạn đã đăng xuất.");
   };
 
   return (
@@ -44,48 +52,49 @@ export default function App() {
         onNavigate={navigate}
         onSearch={(value) => {
           setQuery(value);
-          navigate('home');
+          navigate("home");
         }}
-        onLogin={() => setAuthMode('login')}
-        onRegister={() => setAuthMode('register')}
+        onLogin={() => setAuthMode("login")}
+        onRegister={() => setAuthMode("register")}
         onLogout={handleLogout}
       />
-      {view === 'home' && (
+      <ScrollToTop />
+      {view === "home" && (
         <Home
           query={query}
           user={user}
           onOpenDetail={setDetailId}
-          onLogin={() => setAuthMode('login')}
+          onLogin={() => setAuthMode("login")}
           onNotify={notify}
         />
       )}
-      {view === 'create' && (
+      {view === "create" && (
         <UploadPage
           user={user}
-          onLogin={() => setAuthMode('login')}
+          onLogin={() => setAuthMode("login")}
           onDone={() => {
-            navigate('home');
-            notify('Đã thêm hình ảnh thành công.');
+            navigate("home");
+            notify("Đã thêm hình ảnh thành công.");
           }}
           onNotify={notify}
         />
       )}
-      {view === 'profile' && (
+      {view === "profile" && (
         <Profile
           user={user}
-          onEdit={() => navigate('edit-profile')}
+          onEdit={() => navigate("edit-profile")}
           onOpenDetail={setDetailId}
           onNotify={notify}
         />
       )}
-      {view === 'edit-profile' && user && (
+      {view === "edit-profile" && user && (
         <EditProfile
           user={user}
-          onCancel={() => navigate('profile')}
+          onCancel={() => navigate("profile")}
           onSaved={async () => {
             await refreshProfile();
-            navigate('profile');
-            notify('Đã cập nhật hồ sơ.');
+            navigate("profile");
+            notify("Đã cập nhật hồ sơ.");
           }}
         />
       )}
@@ -103,7 +112,7 @@ export default function App() {
           id={detailId}
           user={user}
           onClose={() => setDetailId(null)}
-          onLogin={() => setAuthMode('login')}
+          onLogin={() => setAuthMode("login")}
           onNotify={notify}
         />
       )}

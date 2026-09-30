@@ -17,11 +17,16 @@ const getUserProfile = async (req, res) => {
 const updateUserProfile = async (req, res) => {
     try {
         const userId = req.user.userId;
-        const { ho_ten, tuoi, anh_dai_dien } = req.body;
+        const { ho_ten, tuoi } = req.body;
+        const avatarPath = req.file ? `/img/${req.file.filename}` : undefined;
         
         const updatedUser = await prisma.nguoi_dung.update({
             where: { nguoi_dung_id: userId },
-            data: { ho_ten, tuoi: Number(tuoi), anh_dai_dien }
+            data: {
+                ho_ten,
+                tuoi: Number(tuoi),
+                ...(avatarPath ? { anh_dai_dien: avatarPath } : {})
+            }
         });
         res.status(200).json({ message: "Cập nhật thành công", data: updatedUser });
     } catch (error) { res.status(500).json({ message: "Lỗi Server" }); }

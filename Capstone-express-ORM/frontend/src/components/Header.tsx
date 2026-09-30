@@ -1,5 +1,7 @@
-import { Bell, LogOut, Search } from 'lucide-react';
-import type { User, View } from '../types';
+import { Bell, LogOut, Search } from "lucide-react";
+import { useState } from "react";
+import { imageUrl } from "../api/axiosClient";
+import type { User, View } from "../types";
 
 export interface HeaderProps {
   user: User | null;
@@ -27,19 +29,27 @@ export default function Header({
       <div className="mx-auto flex max-w-[1450px] flex-wrap items-center gap-3 md:gap-6">
         <button
           className="flex items-center gap-2"
-          onClick={() => onNavigate('home')}
+          onClick={() => onNavigate("home")}
           aria-label="Về trang chủ"
         >
           <span className="grid h-10 w-10 place-items-center rounded-full bg-coral font-display text-2xl font-bold text-white">
             P
           </span>
-          <span className="hidden font-display text-2xl font-bold sm:block">pinboard</span>
+          <span className="hidden font-display text-2xl font-bold sm:block">
+            pinboard
+          </span>
         </button>
         <nav className="order-3 flex items-center gap-1 md:order-2">
-          <NavButton active={view === 'home'} onClick={() => onNavigate('home')}>
+          <NavButton
+            active={view === "home"}
+            onClick={() => onNavigate("home")}
+          >
             Trang chủ
           </NavButton>
-          <NavButton active={view === 'create'} onClick={() => onNavigate('create')}>
+          <NavButton
+            active={view === "create"}
+            onClick={() => onNavigate("create")}
+          >
             Tạo
           </NavButton>
         </nav>
@@ -64,10 +74,10 @@ export default function Header({
             <>
               <Bell size={19} className="hidden text-stone-500 sm:block" />
               <button
-                onClick={() => onNavigate('profile')}
-                className="grid h-10 w-10 place-items-center rounded-full bg-ink text-sm font-bold text-white"
+                onClick={() => onNavigate("profile")}
+                className="grid h-10 w-10 place-items-center overflow-hidden rounded-full bg-ink text-sm font-bold text-white"
               >
-                {initials(user.ho_ten)}
+                <UserAvatar user={user} />
               </button>
               <button
                 onClick={onLogout}
@@ -79,7 +89,10 @@ export default function Header({
             </>
           ) : (
             <>
-              <button onClick={onLogin} className="px-2 py-2 text-sm font-bold text-stone-500">
+              <button
+                onClick={onLogin}
+                className="px-2 py-2 text-sm font-bold text-stone-500"
+              >
                 Đăng nhập
               </button>
               <button
@@ -96,6 +109,23 @@ export default function Header({
   );
 }
 
+function UserAvatar({ user }: { user: User }) {
+  const [imageFailed, setImageFailed] = useState(false);
+
+  if (user.anh_dai_dien && !imageFailed) {
+    return (
+      <img
+        src={imageUrl(user.anh_dai_dien)}
+        alt={`Ảnh đại diện của ${user.ho_ten}`}
+        onError={() => setImageFailed(true)}
+        className="h-full w-full object-cover"
+      />
+    );
+  }
+
+  return initials(user.ho_ten);
+}
+
 function NavButton({
   active,
   onClick,
@@ -107,21 +137,21 @@ function NavButton({
 }) {
   return (
     <button
-      className={`rounded-full px-4 py-2 text-sm font-bold ${active ? 'bg-ink text-white' : 'text-stone-500'}`}
+      className={`rounded-full px-4 py-2 text-sm font-bold ${active ? "bg-ink text-white" : "text-stone-500"}`}
       onClick={onClick}
     >
       {children}
     </button>
   );
 }
-function initials(name = 'P') {
+function initials(name = "P") {
   return (
     name
       .trim()
       .split(/\s+/)
       .slice(-2)
       .map((part) => part[0])
-      .join('')
-      .toUpperCase() || 'P'
+      .join("")
+      .toUpperCase() || "P"
   );
 }
